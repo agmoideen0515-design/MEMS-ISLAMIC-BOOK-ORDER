@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <title>MEMS Book Report</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f0f2f5; }
+        .container { background: white; padding: 25px; border-radius: 15px; max-width: 950px; margin: auto; }
+        h2, h3 { text-align: center; color: #1a5d1a; }
+        .no-print { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #1a5d1a; color: white; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>MEMS TRIKARIPUR</h2>
+    <h3 id="reportTitle">ഇസ്ലാമിക് ബുക്ക് റിപ്പോർട്ട്</h3>
+    <div class="no-print">
+        <select id="classSelector">
+            <option value="all">Office Copy (Summary)</option>
+            <option value="3">Class 3</option><option value="4">Class 4</option>
+            <option value="5">Class 5</option><option value="6">Class 6</option>
+            <option value="7">Class 7</option><option value="8">Class 8</option>
+        </select>
+        <button onclick="generateReport()">കാണുക</button>
+        <button onclick="window.print()">Print</button>
+    </div>
+    <div id="reportContent">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</div>
+</div>
+
+<script>
+    const scriptURL = 'നിങ്ങളുടെ_പുതിയ_WEB_APP_URL';
+    let allData = [];
+
+    window.onload = () => {
+        fetch(scriptURL + "?action=read").then(res => res.json()).then(data => {
+            allData = data; generateReport();
+        });
+    };
+
+    function generateReport() {
+        const cls = document.getElementById('classSelector').value;
+        const container = document.getElementById('reportContent');
+        if (cls === "all") {
+            showSummary(container);
+        } else {
+            showClassList(cls, container);
+        }
+    }
+
+    function showSummary(container) {
+        let summary = { 
+            "3":{t:0,w:0,n:"3rd FIQH/ULOOM"}, "4":{t:0,w:0,n:"4th FIQH/ULOOM"}, 
+            "5":{t:0,w:0,n:"5th FIQH/ULOOM"}, "6":{t:0,w:0,n:"6th FIQH/ULOOM"}, 
+            "7":{t:0,w:0,n:"7th FIQH/ULOOM"}, "8":{t:0,w:0,n:"8th DUROOS/FIQH/THAZKIYA"} 
+        };
+        allData.forEach(item => { if(summary[item.sClass]){ if(item.textbook==1)summary[item.sClass].t++; if(item.workbook==1)summary[item.sClass].w++; }});
+        let h = <table><tr><th>പുസ്തകത്തിന്റെ പേര്</th><th>Textbook</th><th>Workbook</th></tr>;
+        for(let key in summary) h += <tr><td>${summary[key].n} (Class ${key})</td><td>${summary[key].t}</td><td>${summary[key].w}</td></tr>;
+        container.innerHTML = h + </table>;
+    }
+
+    function showClassList(cls, container) {
+        let filtered = allData.filter(i => i.sClass == cls);
+        let h = <table><tr><th>Student Name</th><th>Div</th><th>Textbook</th><th>Workbook</th></tr>;
+        filtered.forEach(i => h += <tr><td>${i.name}</td><td>${i.division}</td><td>${i.textbook==1?'Yes':'-'}</td><td>${i.workbook==1?'Yes':'-'}</td></tr>);
+        container.innerHTML = h + </table>;
+    }
+</script>
+</body>
+</html>
