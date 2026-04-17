@@ -1,1 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Order Report</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f7f6; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #1a5d1a; color: white; }
+    </style>
+</head>
+<body>
+    <h2>Book Order Report</h2>
+    <div id="report">Loading...</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbywDTtkD3zlTVLAokeStTFiX73QZx3rEkedF958mceg9Hu3Am3mHR6LjOb_rKJLwoFJ/exec';
+    fetch(scriptURL)
+    .then(res => res.json())
+    .then(data => {
+        let html = '<table><tr><th>Name</th><th>Class</th><th>Div</th><th>Textbook</th><th>Workbook</th></tr>';
+        data.forEach(row => {
+            html += `<tr><td>${row.name}</td><td>${row.sClass}</td><td>${row.division}</td><td>${row.textbook}</td><td>${row.workbook}</td></tr>`;
+        });
+        html += '</table>';
+        document.getElementById('report').innerHTML = html;
+    });
+</script>
+</body>
+</html>
 
