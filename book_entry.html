@@ -47,7 +47,7 @@
         </select>
 
         <div id="bookArea" class="book-section" style="display:none;">
-            <p style="margin-top:0; font-weight:bold; color:#1a5d1a;">പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:</p>
+            <p style="margin-top:0; font-weight:bold; color:#1a5d1a;" id="bookHeader">പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:</p>
             <div id="bookList"></div>
         </div>
 
@@ -56,29 +56,32 @@
 </div>
 
 <script>
-    // നിങ്ങൾ നൽകിയ പുതിയ ലിങ്ക് താഴെ ചേർത്തിരിക്കുന്നു
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxEW73RJmwXWyxCTuTA6IOokQWOMncxwkj3vz5sFVx9SfBtSuGqW7odSr2JeNyJPRlX/exec';
     
+    // ഓരോ ക്ലാസ്സിലെയും പുസ്തകങ്ങളുടെ കൃത്യമായ പേര്
     const booksData = {
-        "3": ["3rd AHKAMU THAJVEED", "3rd THAJVEED (WORK)", "3rd MASAA-ILUL FIQH", "3rd FIQH (WORK)", "3rd ULOOMUDDEEN", "3rd ULOOM (WORK)"],
-        "4": ["4th AHKAMU THAJVEED", "4th THAJVEED (WORK)", "4th MASAA-ILUL FIQH", "4th FIQH (WORK)", "4th ULOOMUDDEEN", "4th ULOOM (WORK)"],
-        "5": ["5th AHKAMU THAJVEED", "5th THAJVEED (WORK)", "5th MASAA-ILUL FIQH", "5th FIQH (WORK)", "5th ULOOMUDDEEN", "5th ULOOM (WORK)"],
-        "6": ["6th AHKAMU THAJVEED", "6th THAJVEED (WORK)", "6th MASAA-ILUL FIQH", "6th FIQH (WORK)", "6th ULOOMUDDEEN", "6th ULOOM (WORK)"],
-        "7": ["7th AHKAMU THAJVEED", "7th THAJVEED (WORK)", "7th MASAA-ILUL FIQH", "7th FIQH (WORK)", "7th ULOOMUDDEEN", "7th ULOOM (WORK)"],
-        "8": ["8th DUROOS", "8th DUROOS (Work)", "8th FIQHUL ISLAM", "8th FIQH (Work)", "8th THAZKIYA", "8th THAZKIYA (Work)"]
+        "3": ["AHKAMU THAJVEED", "THAJVEED (WORK)", "MASAA-ILUL FIQH", "FIQH (WORK)", "ULOOMUDDEEN", "ULOOM (WORK)"],
+        "4": ["AHKAMU THAJVEED", "THAJVEED (WORK)", "MASAA-ILUL FIQH", "FIQH (WORK)", "ULOOMUDDEEN", "ULOOM (WORK)"],
+        "5": ["AHKAMU THAJVEED", "THAJVEED (WORK)", "MASAA-ILUL FIQH", "FIQH (WORK)", "ULOOMUDDEEN", "ULOOM (WORK)"],
+        "6": ["AHKAMU THAJVEED", "THAJVEED (WORK)", "MASAA-ILUL FIQH", "FIQH (WORK)", "ULOOMUDDEEN", "ULOOM (WORK)"],
+        "7": ["AHKAMU THAJVEED", "THAJVEED (WORK)", "MASAA-ILUL FIQH", "FIQH (WORK)", "ULOOMUDDEEN", "ULOOM (WORK)"],
+        "8": ["DUROOS", "DUROOS (Work)", "FIQHUL ISLAM", "FIQH (Work)", "THAZKIYA", "THAZKIYA (Work)"]
     };
 
     function updateBooks() {
         const cls = document.getElementById('sClass').value;
         const area = document.getElementById('bookArea');
         const listDiv = document.getElementById('bookList');
+        const header = document.getElementById('bookHeader');
         listDiv.innerHTML = '';
         
         if(cls && booksData[cls]) {
+            header.innerText = `Class ${cls} - പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:`;
             booksData[cls].forEach(book => {
                 const label = document.createElement('label');
                 label.className = 'checkbox-row';
-                label.innerHTML = `<input type="checkbox" name="books" value="${book}"> <span>${book}</span>`;
+                // ഷീറ്റിലേക്ക് അയക്കുമ്പോൾ ക്ലാസ്സ് നമ്പർ കൂടി ചേർക്കുന്നു
+                label.innerHTML = `<input type="checkbox" name="books" value="${cls}nd/rd/th ${book}"> <span>${book}</span>`;
                 listDiv.appendChild(label);
             });
             area.style.display = 'block';
