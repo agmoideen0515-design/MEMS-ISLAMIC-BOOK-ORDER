@@ -58,7 +58,6 @@
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxEW73RJmwXWyxCTuTA6IOokQWOMncxwkj3vz5sFVx9SfBtSuGqW7odSr2JeNyJPRlX/exec';
     
-    // ഓരോ ക്ലാസ്സിലെയും പുസ്തകങ്ങളുടെ കൃത്യമായ പേര്
     const booksData = {
         "3": ["AHKAMU THAJVEED", "THAJVEED (WORK)", "MASAA-ILUL FIQH", "FIQH (WORK)", "ULOOMUDDEEN", "ULOOM (WORK)"],
         "4": ["AHKAMU THAJVEED", "THAJVEED (WORK)", "MASAA-ILUL FIQH", "FIQH (WORK)", "ULOOMUDDEEN", "ULOOM (WORK)"],
@@ -67,6 +66,11 @@
         "7": ["AHKAMU THAJVEED", "THAJVEED (WORK)", "MASAA-ILUL FIQH", "FIQH (WORK)", "ULOOMUDDEEN", "ULOOM (WORK)"],
         "8": ["DUROOS", "DUROOS (Work)", "FIQHUL ISLAM", "FIQH (Work)", "THAZKIYA", "THAZKIYA (Work)"]
     };
+
+    function getSuffix(n) {
+        if (n == 3) return "rd";
+        return "th";
+    }
 
     function updateBooks() {
         const cls = document.getElementById('sClass').value;
@@ -77,11 +81,12 @@
         
         if(cls && booksData[cls]) {
             header.innerText = `Class ${cls} - പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:`;
+            const suffix = getSuffix(cls);
             booksData[cls].forEach(book => {
                 const label = document.createElement('label');
                 label.className = 'checkbox-row';
-                // ഷീറ്റിലേക്ക് അയക്കുമ്പോൾ ക്ലാസ്സ് നമ്പർ കൂടി ചേർക്കുന്നു
-                label.innerHTML = `<input type="checkbox" name="books" value="${cls}nd/rd/th ${book}"> <span>${book}</span>`;
+                // ഇവിടെയാണ് കൃത്യമായ ക്ലാസ്സ് നമ്പർ ചേർക്കുന്നത് (ഉദാ: 3rd, 8th)
+                label.innerHTML = `<input type="checkbox" name="books" value="${cls}${suffix} ${book}"> <span>${book}</span>`;
                 listDiv.appendChild(label);
             });
             area.style.display = 'block';
