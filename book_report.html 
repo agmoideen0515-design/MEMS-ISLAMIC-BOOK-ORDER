@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEMS Book Order Report</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 15px; }
+        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 1000px; margin: auto; }
+        h2 { color: #1a5d1a; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1a5d1a; padding-bottom: 10px; }
+        
+        .filter-section { background: #e8f5e9; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .filter-section label { font-weight: bold; color: #1a5d1a; }
+        select { padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+        
+        .stats { margin-bottom: 15px; font-weight: bold; color: #333; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; font-size: 14px; }
+        th { background: #1a5d1a; color: white; position: sticky; top: 0; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f1f1f1; }
+        
+        @media print {
+            .filter-section, .btn-print { display: none; }
+            body { padding: 0; }
+            .container { box-shadow: none; max-width: 100%; }
+        }
+        .btn-print { background: #1a5d1a; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; float: right; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>MEMS TRIKARIPUR - BOOK ORDER REPORT</h2>
+
+    <div class="filter-section">
+        <label>ക്ലാസ്സ് തിരഞ്ഞെടുക്കുക:</label>
+        <select id="classFilter" onchange="filterData()">
+            <option value="all">എല്ലാ ക്ലാസ്സുകളും (Office View)</option>
+            <option value="3">Class 3</option>
+            <option value="4">Class 4</option>
+            <option value="5">Class 5</option>
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+        </select>
+
+        <label>ഡിവിഷൻ:</label>
+        <select id="divFilter" onchange="filterData()">
+            <option value="all">All</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+        </select>
+        
+        <button class="btn-print" onclick="window.print()">Print Report</button>
+    </div>
+
+    <div id="stats" class="stats">ആകെ ഓർഡറുകൾ: 0</div>
+    <div id="status" style="text-align:center; padding:20px;">ലോഡ് ചെയ്യുന്നു...</div>
+    <div id="tableContent"></div>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyWgOtjAw-QZcp7fryP0q5B1ga3Yd-L7v21Fa0BzGYD1VgZ-UUr_QVW7nKmWcDyQAC9/exec';
+    let allData = [];
+
+    // ഡാറ്റ എടുക്കുന്നു
+    fetch(scriptURL)
+    .then(response => response.json())
+    .then(data => {
+        allData = data;
+        document.getElementById('status').style.display = 'none';
+        filterData(); // ആദ്യം എല്ലാ ഡാറ്റയും കാണിക്കുന്നു
+    })
+    .catch(error => {
+        document.getElementById('status').innerText = "ഡാറ്റ ലഭിക്കുന്നതിൽ തടസ്സം നേരിട്ടു.";
+    });
+
+    function filterData() {
+        const classVal = document.getElementById('classFilter').value;
+        const divVal = document.getElementById('divFilter').value;
+        
+        const filtered = allData.filter(item => {
+            const matchClass = (classVal === 'all' || String(item.sClass) === classVal);
+            const matchDiv = (divVal === 'all' || item.division === divVal);
+            return matchClass && matchDiv;
+        });
+
+        displayTable(filtered);
+        document.getElementById('stats').innerText = `ആകെ ഓർഡറുകൾ: ${filtered.length}`;
+    }
+
+    function displayTable(data) {
+        let html = '<table><thead><tr><th>No.</th><th>Name</th><th>Class</th><th>Div</th><th>Books Ordered</th></tr></thead><tbody>';
+        
+        data.forEach((item, index) => {
+            html += `<tr>
+                <td>${index + 1}</td>
+                <td>${item.name}</td>
+                <td>${item.sClass}</td>
+                <td>${item.division}</td>
+                <td>${item.selectedBooks}</td>
+            </tr>`;
+        });
+
+        html += '</tbody></table>';
+        document.getElementById('tableContent').innerHTML = data.length > 0 ? html : '<p style="text-align:center;">ഈ സെക്ഷനിൽ ഓർഡറുകൾ ഒന്നും ലഭ്യമല്ല.</p>';
+    }
+</script>
+
+</body>
+</html>
