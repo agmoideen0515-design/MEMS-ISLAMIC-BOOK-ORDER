@@ -56,7 +56,8 @@
 </div>
 
 <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxEW73RJmwXWyxCTuTA6IOokQWOMncxwkj3vz5sFVx9SfBtSuGqW7odSr2JeNyJPRlX/exec';
+    // നിങ്ങൾ നൽകിയ പുതിയ ലിങ്ക്
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxBxpsKE7TFh4OB1m9xF19j2Ymk8ICWpeDt50yDDkc7uw0R7Ec-NRKN1h66YNXIPbmW/exec';
     
     const booksData = {
         "3": ["AHKAMU THAJVEED", "THAJVEED (WORK)", "MASAA-ILUL FIQH", "FIQH (WORK)", "ULOOMUDDEEN", "ULOOM (WORK)"],
@@ -67,11 +68,6 @@
         "8": ["DUROOS", "DUROOS (Work)", "FIQHUL ISLAM", "FIQH (Work)", "THAZKIYA", "THAZKIYA (Work)"]
     };
 
-    function getSuffix(n) {
-        if (n == 3) return "rd";
-        return "th";
-    }
-
     function updateBooks() {
         const cls = document.getElementById('sClass').value;
         const area = document.getElementById('bookArea');
@@ -81,11 +77,15 @@
         
         if(cls && booksData[cls]) {
             header.innerText = `Class ${cls} - പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:`;
-            const suffix = getSuffix(cls);
+            
+            // സഫിക്സ് (3rd, 4th...) കൃത്യമാക്കുന്നു
+            let suffix = "th";
+            if (cls == "3") suffix = "rd";
+
             booksData[cls].forEach(book => {
                 const label = document.createElement('label');
                 label.className = 'checkbox-row';
-                // ഇവിടെയാണ് കൃത്യമായ ക്ലാസ്സ് നമ്പർ ചേർക്കുന്നത് (ഉദാ: 3rd, 8th)
+                // ഷീറ്റിലേക്ക് അയക്കുമ്പോൾ '3rd AHKAMU...' എന്ന് വരാൻ
                 label.innerHTML = `<input type="checkbox" name="books" value="${cls}${suffix} ${book}"> <span>${book}</span>`;
                 listDiv.appendChild(label);
             });
@@ -118,7 +118,7 @@
             location.reload();
         })
         .catch(err => {
-            alert("Error! ഒന്നുകൂടി ശ്രമിക്കുക.");
+            alert("Error! ദയവായി ഒന്നുകൂടി ശ്രമിക്കുക.");
             btn.disabled = false;
             btn.innerText = "Submit Order";
         });
