@@ -56,8 +56,8 @@
 </div>
 
 <script>
-    // നിങ്ങൾ നൽകിയ പുതിയ ലിങ്ക്
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxBxpsKE7TFh4OB1m9xF19j2Ymk8ICWpeDt50yDDkc7uw0R7Ec-NRKN1h66YNXIPbmW/exec';
+    // നിങ്ങൾ നൽകിയ ഏറ്റവും പുതിയ ലിങ്ക്
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyWgOtjAw-QZcp7fryP0q5B1ga3Yd-L7v21Fa0BzGYD1VgZ-UUr_QVW7nKmWcDyQAC9/exec';
     
     const booksData = {
         "3": ["AHKAMU THAJVEED", "THAJVEED (WORK)", "MASAA-ILUL FIQH", "FIQH (WORK)", "ULOOMUDDEEN", "ULOOM (WORK)"],
@@ -78,14 +78,14 @@
         if(cls && booksData[cls]) {
             header.innerText = `Class ${cls} - പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:`;
             
-            // സഫിക്സ് (3rd, 4th...) കൃത്യമാക്കുന്നു
+            // സഫിക്സ് പ്രശ്നം ഒഴിവാക്കാൻ ഇവിടെ മാറ്റം വരുത്തി
             let suffix = "th";
             if (cls == "3") suffix = "rd";
 
             booksData[cls].forEach(book => {
                 const label = document.createElement('label');
                 label.className = 'checkbox-row';
-                // ഷീറ്റിലേക്ക് അയക്കുമ്പോൾ '3rd AHKAMU...' എന്ന് വരാൻ
+                // ഇവിടെ ഓരോ ക്ലാസ്സിനും അനുയോജ്യമായ നമ്പർ മാത്രം വരും
                 label.innerHTML = `<input type="checkbox" name="books" value="${cls}${suffix} ${book}"> <span>${book}</span>`;
                 listDiv.appendChild(label);
             });
