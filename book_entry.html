@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEMS Islamic Book Order</title>
     <style>
-        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; }
-        .card { background: white; padding: 20px; border-radius: 12px; max-width: 450px; margin: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #1a5d1a; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .btn { background: #1a5d1a; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        .book-box { background: #eef9ee; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px dashed #1a5d1a; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 15px; }
+        .card { background: white; padding: 25px; border-radius: 15px; max-width: 450px; margin: auto; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border-top: 8px solid #1a5d1a; }
+        h2 { text-align: center; color: #1a5d1a; margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin-top: 15px; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .book-section { background: #f9fff9; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid #1a5d1a; }
+        .btn { background: #1a5d1a; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .checkbox-row { display: flex; align-items: center; margin-bottom: 12px; cursor: pointer; background: white; padding: 8px; border-radius: 5px; border: 1px solid #eee; }
+        input[type="checkbox"] { width: 18px; height: 18px; margin-right: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -18,7 +21,7 @@
     <h2>MEMS TRIKARIPUR</h2>
     <form id="orderForm">
         <label>Student Name</label>
-        <input type="text" name="name" required placeholder="Full Name">
+        <input type="text" name="name" required placeholder="Enter Full Name">
         
         <label>Class</label>
         <select name="sClass" id="sClass" required onchange="updateBooks()">
@@ -34,10 +37,9 @@
         <label>Division</label>
         <input type="text" name="division" required placeholder="A/B/C">
 
-        <div id="bookArea" class="book-box" style="display:none;">
-            <p style="margin-top:0; font-weight:bold;">പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:</p>
-            <label><input type="checkbox" name="textbook" id="tCB"> <span id="tLabel">Textbook</span></label><br><br>
-            <label><input type="checkbox" name="workbook" id="wCB"> <span id="wLabel">Workbook</span></label>
+        <div id="bookArea" class="book-section" style="display:none;">
+            <p style="margin-top:0; font-weight:bold; color:#1a5d1a;">പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:</p>
+            <div id="bookList"></div>
         </div>
 
         <button type="submit" class="btn" id="submitBtn">Submit Order</button>
@@ -45,37 +47,66 @@
 </div>
 
 <script>
+    // നിങ്ങളുടെ Web App URL ഇവിടെ മാറ്റമില്ലാതെ തുടരും
     const scriptURL = 'https://script.google.com/macros/s/AKfycbywDTtkD3zlTVLAokeStTFiX73QZx3rEkedF958mceg9Hu3Am3mHR6LjOb_rKJLwoFJ/exec';
-    const books = {
-        "3": ["3rd Masa-ilul Fiqh", "3rd Workbook"],
-        "4": ["4th Masa-ilul Fiqh", "4th Workbook"],
-        "5": ["5th Masa-ilul Fiqh", "5th Workbook"],
-        "6": ["6th Masa-ilul Fiqh", "6th Workbook"],
-        "7": ["7th Masa-ilul Fiqh", "7th Workbook"],
-        "8": ["8th Duroos/Thazkiya", "8th Workbook"]
+    
+    // പിഡിഎഫിലെ മുഴുവൻ പുസ്തകങ്ങളും താഴെ നൽകുന്നു
+    const booksData = {
+        "3": ["3rd AHKAMU THAJVEED", "3rd THAJVEED (WORK)", "3rd MASAA-ILUL FIQH", "3rd FIQH (WORK)", "3rd ULOOMUDDEEN", "3rd ULOOM (WORK)"],
+        "4": ["4th AHKAMU THAJVEED", "4th THAJVEED (WORK)", "4th MASAA-ILUL FIQH", "4th FIQH (WORK)", "4th ULOOMUDDEEN", "4th ULOOM (WORK)"],
+        "5": ["5th AHKAMU THAJVEED", "5th THAJVEED (WORK)", "5th MASAA-ILUL FIQH", "5th FIQH (WORK)", "5th ULOOMUDDEEN", "5th ULOOM (WORK)"],
+        "6": ["6th AHKAMU THAJVEED", "6th THAJVEED (WORK)", "6th MASAA-ILUL FIQH", "6th FIQH (WORK)", "6th ULOOMUDDEEN", "6th ULOOM (WORK)"],
+        "7": ["7th AHKAMU THAJVEED", "7th THAJVEED (WORK)", "7th MASAA-ILUL FIQH", "7th FIQH (WORK)", "7th ULOOMUDDEEN", "7th ULOOM (WORK)"],
+        "8": ["8th DUROOS & THAZKIYA", "8th WORKBOOK"]
     };
 
     function updateBooks() {
         const cls = document.getElementById('sClass').value;
         const area = document.getElementById('bookArea');
-        if(cls && books[cls]) {
-            document.getElementById('tLabel').innerText = books[cls][0];
-            document.getElementById('wLabel').innerText = books[cls][1];
-            document.getElementById('tCB').value = books[cls][0];
-            document.getElementById('wCB').value = books[cls][1];
+        const listDiv = document.getElementById('bookList');
+        listDiv.innerHTML = '';
+        
+        if(cls && booksData[cls]) {
+            booksData[cls].forEach(book => {
+                const label = document.createElement('label');
+                label.className = 'checkbox-row';
+                label.innerHTML = `<input type="checkbox" name="books" value="${book}"> <span>${book}</span>`;
+                listDiv.appendChild(label);
+            });
             area.style.display = 'block';
-        } else { area.style.display = 'none'; }
+        } else {
+            area.style.display = 'none';
+        }
     }
 
     document.getElementById('orderForm').addEventListener('submit', e => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.disabled = true; btn.innerText = "അയച്ചുകൊണ്ടിരിക്കുന്നു...";
-        fetch(scriptURL, { method: 'POST', body: new FormData(e.target)})
-        .then(res => { alert("ഓർഡർ ലഭിച്ചു!"); location.reload(); })
-        .catch(err => { alert("Error!"); btn.disabled = false; });
+        const selectedBooks = Array.from(document.querySelectorAll('input[name="books"]:checked')).map(cb => cb.value);
+        
+        if(selectedBooks.length === 0) {
+            alert("ദയവായി ഒരു പുസ്തകമെങ്കിലും തിരഞ്ഞെടുക്കുക.");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerText = "അയച്ചുകൊണ്ടിരിക്കുന്നു...";
+        
+        const formData = new FormData(e.target);
+        formData.delete('books'); // പഴയ ലിസ്റ്റ് കളയുന്നു
+        formData.append('selectedBooks', selectedBooks.join(', ')); // തിരഞ്ഞെടുത്ത് എല്ലാം ഒന്നായി അയക്കുന്നു
+
+        fetch(scriptURL, { method: 'POST', body: formData})
+        .then(res => {
+            alert("ഓർഡർ വിജയകരമായി സബ്മിറ്റ് ചെയ്തു!");
+            location.reload();
+        })
+        .catch(err => {
+            alert("Error! ഒന്നുകൂടി ശ്രമിക്കുക.");
+            btn.disabled = false;
+            btn.innerText = "Submit Order";
+        });
     });
 </script>
 </body>
 </html>
-
