@@ -1,1 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEMS Islamic Book Order</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; }
+        .card { background: white; padding: 20px; border-radius: 12px; max-width: 450px; margin: auto; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1a5d1a; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn { background: #1a5d1a; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .book-box { background: #eef9ee; padding: 15px; border-radius: 8px; margin: 15px 0; border: 1px dashed #1a5d1a; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>MEMS TRIKARIPUR</h2>
+    <form id="orderForm">
+        <label>Student Name</label>
+        <input type="text" name="name" required placeholder="Full Name">
+        
+        <label>Class</label>
+        <select name="sClass" id="sClass" required onchange="updateBooks()">
+            <option value="">Select Class</option>
+            <option value="3">Class 3</option>
+            <option value="4">Class 4</option>
+            <option value="5">Class 5</option>
+            <option value="6">Class 6</option>
+            <option value="7">Class 7</option>
+            <option value="8">Class 8</option>
+        </select>
+
+        <label>Division</label>
+        <input type="text" name="division" required placeholder="A/B/C">
+
+        <div id="bookArea" class="book-box" style="display:none;">
+            <p style="margin-top:0; font-weight:bold;">പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:</p>
+            <label><input type="checkbox" name="textbook" id="tCB"> <span id="tLabel">Textbook</span></label><br><br>
+            <label><input type="checkbox" name="workbook" id="wCB"> <span id="wLabel">Workbook</span></label>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">Submit Order</button>
+    </form>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbywDTtkD3zlTVLAokeStTFiX73QZx3rEkedF958mceg9Hu3Am3mHR6LjOb_rKJLwoFJ/exec';
+    const books = {
+        "3": ["3rd Masa-ilul Fiqh", "3rd Workbook"],
+        "4": ["4th Masa-ilul Fiqh", "4th Workbook"],
+        "5": ["5th Masa-ilul Fiqh", "5th Workbook"],
+        "6": ["6th Masa-ilul Fiqh", "6th Workbook"],
+        "7": ["7th Masa-ilul Fiqh", "7th Workbook"],
+        "8": ["8th Duroos/Thazkiya", "8th Workbook"]
+    };
+
+    function updateBooks() {
+        const cls = document.getElementById('sClass').value;
+        const area = document.getElementById('bookArea');
+        if(cls && books[cls]) {
+            document.getElementById('tLabel').innerText = books[cls][0];
+            document.getElementById('wLabel').innerText = books[cls][1];
+            document.getElementById('tCB').value = books[cls][0];
+            document.getElementById('wCB').value = books[cls][1];
+            area.style.display = 'block';
+        } else { area.style.display = 'none'; }
+    }
+
+    document.getElementById('orderForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true; btn.innerText = "അയച്ചുകൊണ്ടിരിക്കുന്നു...";
+        fetch(scriptURL, { method: 'POST', body: new FormData(e.target)})
+        .then(res => { alert("ഓർഡർ ലഭിച്ചു!"); location.reload(); })
+        .catch(err => { alert("Error!"); btn.disabled = false; });
+    });
+</script>
+</body>
+</html>
 
