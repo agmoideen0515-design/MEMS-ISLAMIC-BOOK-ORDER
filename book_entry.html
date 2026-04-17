@@ -35,7 +35,16 @@
         </select>
 
         <label>Division</label>
-        <input type="text" name="division" required placeholder="A/B/C">
+        <select name="division" required>
+            <option value="">Select Division</option>
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="G">G</option>
+        </select>
 
         <div id="bookArea" class="book-section" style="display:none;">
             <p style="margin-top:0; font-weight:bold; color:#1a5d1a;">പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:</p>
@@ -47,17 +56,15 @@
 </div>
 
 <script>
-    // നിങ്ങളുടെ Web App URL ഇവിടെ മാറ്റമില്ലാതെ തുടരും
     const scriptURL = 'https://script.google.com/macros/s/AKfycbywDTtkD3zlTVLAokeStTFiX73QZx3rEkedF958mceg9Hu3Am3mHR6LjOb_rKJLwoFJ/exec';
     
-    // പിഡിഎഫിലെ മുഴുവൻ പുസ്തകങ്ങളും താഴെ നൽകുന്നു
     const booksData = {
         "3": ["3rd AHKAMU THAJVEED", "3rd THAJVEED (WORK)", "3rd MASAA-ILUL FIQH", "3rd FIQH (WORK)", "3rd ULOOMUDDEEN", "3rd ULOOM (WORK)"],
         "4": ["4th AHKAMU THAJVEED", "4th THAJVEED (WORK)", "4th MASAA-ILUL FIQH", "4th FIQH (WORK)", "4th ULOOMUDDEEN", "4th ULOOM (WORK)"],
         "5": ["5th AHKAMU THAJVEED", "5th THAJVEED (WORK)", "5th MASAA-ILUL FIQH", "5th FIQH (WORK)", "5th ULOOMUDDEEN", "5th ULOOM (WORK)"],
         "6": ["6th AHKAMU THAJVEED", "6th THAJVEED (WORK)", "6th MASAA-ILUL FIQH", "6th FIQH (WORK)", "6th ULOOMUDDEEN", "6th ULOOM (WORK)"],
         "7": ["7th AHKAMU THAJVEED", "7th THAJVEED (WORK)", "7th MASAA-ILUL FIQH", "7th FIQH (WORK)", "7th ULOOMUDDEEN", "7th ULOOM (WORK)"],
-        "8": ["8th DUROOS & THAZKIYA", "8th WORKBOOK"]
+        "8": ["8th DUROOS", "8th DUROOS (Work)", "8th FIQHUL ISLAM", "8th FIQH (Work)", "8th THAZKIYA", "8th THAZKIYA (Work)"]
     };
 
     function updateBooks() {
@@ -93,8 +100,8 @@
         btn.innerText = "അയച്ചുകൊണ്ടിരിക്കുന്നു...";
         
         const formData = new FormData(e.target);
-        formData.delete('books'); // പഴയ ലിസ്റ്റ് കളയുന്നു
-        formData.append('selectedBooks', selectedBooks.join(', ')); // തിരഞ്ഞെടുത്ത് എല്ലാം ഒന്നായി അയക്കുന്നു
+        formData.delete('books'); 
+        formData.append('selectedBooks', selectedBooks.join(', ')); 
 
         fetch(scriptURL, { method: 'POST', body: formData})
         .then(res => {
