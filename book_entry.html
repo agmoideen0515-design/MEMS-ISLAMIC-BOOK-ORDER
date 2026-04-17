@@ -56,7 +56,7 @@
 </div>
 
 <script>
-    // നിങ്ങളുടെ ഏറ്റവും പുതിയ വെബ് ആപ്പ് ലിങ്ക്
+    // നിങ്ങളുടെ വെബ് ആപ്പ് ലിങ്ക്
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyWgOtjAw-QZcp7fryP0q5B1ga3Yd-L7v21Fa0BzGYD1VgZ-UUr_QVW7nKmWcDyQAC9/exec';
     
     const booksData = {
@@ -78,14 +78,11 @@
         if(cls && booksData[cls]) {
             header.innerText = `Class ${cls} - പുസ്തകങ്ങൾ തിരഞ്ഞെടുക്കുക:`;
             
-            let suffix = "th";
-            if (cls == "3") suffix = "rd";
-
             booksData[cls].forEach(book => {
                 const label = document.createElement('label');
                 label.className = 'checkbox-row';
-                // ഷീറ്റിൽ ഓരോ പുസ്തകത്തിന്റെയും കൂടെ ക്ലാസ് വരാൻ (3rd, 4th..)
-                label.innerHTML = `<input type="checkbox" name="books" value="${cls}${suffix} ${book}"> <span>${book}</span>`;
+                // ഇവിടെ 'value' വിൽ പുസ്തകത്തിന്റെ പേര് മാത്രമാക്കി മാറ്റി
+                label.innerHTML = `<input type="checkbox" name="books" value="${book}"> <span>${book}</span>`;
                 listDiv.appendChild(label);
             });
             area.style.display = 'block';
